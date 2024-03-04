@@ -1,6 +1,8 @@
 {
   "PORT": "5005",
-  "DD": {
+  "DB": {
+    "NAME": "mongodb",
     "ADDRESS": "mongodb://localhost:27017/reddnotes"
-  }
+  },
+  "SECRET_KEY": "todo write secret key"
 }

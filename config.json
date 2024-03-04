@@ -1,0 +1,6 @@
+{
+  "PORT": "5005",
+  "DD": {
+    "ADDRESS": "mongodb://localhost:27017/reddnotes"
+  }
+}

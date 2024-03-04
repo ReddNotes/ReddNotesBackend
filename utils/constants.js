@@ -27,6 +27,7 @@ const MESSAGE = {
     },
     NOT_FOUND: {
       SIMPLE: 'Not found',
+      USER: 'Not found user',
     },
     NOT_AUTHORIZED: {
       SIMPLE: 'User is not authorized',
@@ -36,6 +37,7 @@ const MESSAGE = {
     },
     DUPLICATE: {
       SIMPLE: 'You can not use these parameters, try other ones',
+      USER: 'User with this nickname already exist',
     },
     VALIDATION: {
       SIMPLE: 'Validation error',
@@ -48,6 +50,7 @@ const MESSAGE = {
     },
     CREATED: {
       SIMPLE: 'Created',
+      USER: 'User was successful created',
     },
     POST: {
       SIMPLE: 'Was successful posted',

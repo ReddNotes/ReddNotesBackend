@@ -15,13 +15,36 @@ class User {
     this.sendError = sendError;
 
     // ? binding
-    this.getUserInfoById = this.getUserInfoById.bind(this);
-    this.getUserInfoByToken = this.getUserInfoByToken.bind(this);
+    this.getAllUserInfo = this.getAllUserInfo.bind(this);
+    this.getOneUserInfoById = this.getOneUserInfoById.bind(this);
+    this.getOneUserInfoByToken = this.getOneUserInfoByToken.bind(this);
     this.updateUserInfoByToken = this.updateUserInfoByToken.bind(this);
   }
 
+  // get info about all users
+  async getAllUserInfo(data, req) {
+    try {
+      const users = await userSchema.find({});
+
+      if (!users) {
+        throw new NotFoundError(MESSAGE.ERROR.NOT_FOUND.USERS);
+      }
+
+      return {
+        type: this.type,
+        action: 'get',
+        method: 'all',
+        statusCode: STATUS.INFO.OK,
+        statusMessage: MESSAGE.INFO.GET.USERS,
+        data: users,
+      };
+    } catch (err) {
+      this.sendError(err);
+    }
+  }
+
   // get info about user by id
-  async getUserInfoById(data, req) {
+  async getOneUserInfoById(data, req) {
     try {
       const user = await userSchema.findById(data.data.userId);
 
@@ -36,7 +59,7 @@ class User {
       return {
         type: this.type,
         action: 'get user info',
-        method: 'by id',
+        method: 'one by id',
         statusCode: STATUS.INFO.OK,
         statusMessage: MESSAGE.INFO.GET.USER,
         data: userInfo,
@@ -47,7 +70,7 @@ class User {
   }
 
   // get info about current user
-  async getUserInfoByToken(data, req) {
+  async getOneUserInfoByToken(data, req) {
     try {
       const user = await userSchema.findById(req.user._id);
 
@@ -58,7 +81,7 @@ class User {
       return {
         type: this.type,
         action: 'get',
-        method: 'by token',
+        method: 'one by token',
         statusCode: STATUS.INFO.OK,
         statusMessage: MESSAGE.INFO.GET.USER,
         data: user,
@@ -74,12 +97,11 @@ class User {
       const user = await userSchema.findByIdAndUpdate(
         req.user._id,
         {
-          email: data.data.email,
           avatar: data.data.avatar,
           firstName: data.data.firstName,
           lastName: data.data.lastName,
           birthday: data.data.birthday,
-          city: data.data.city,
+          description: data.data.description,
         },
         { new: true },
       );

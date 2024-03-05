@@ -24,10 +24,15 @@ const MESSAGE = {
     },
     FORBIDDEN: {
       SIMPLE: 'You are not allowed to do this operation',
+      COMMENT: 'You are not allowed to do operations with this comment',
     },
     NOT_FOUND: {
       SIMPLE: 'Not found',
       USER: 'Not found user',
+      USERS: 'Not found users',
+      NOTE: 'Not found note',
+      NOTES: 'Not found any notes',
+      COMMENT: 'Not found comment',
     },
     NOT_AUTHORIZED: {
       SIMPLE: 'User is not authorized',
@@ -47,19 +52,31 @@ const MESSAGE = {
   INFO: {
     GET: {
       SIMPLE: 'Here info',
+      USER: 'Here info about user',
+      USERS: 'Here info about users',
+      NOTE: 'Here info about note',
+      NOTES: 'Here info about notes',
     },
     CREATED: {
       SIMPLE: 'Created',
       USER: 'User was successful created',
+      NOTE: 'Note was successful created',
+      COMMENT: 'Comment was successful created',
     },
     POST: {
       SIMPLE: 'Was successful posted',
     },
     DELETE: {
       SIMPLE: 'Deleted',
+      COMMENT: 'Comment was successful deleted',
     },
     PUT: {
       SIMPLE: 'Was successful put',
+    },
+    UPDATE: {
+      SIMPLE: 'Info patched',
+      USER: 'Info of user was successful updated',
+      COMMENT: 'Comment of note was successful updated',
     },
     PATCH: {
       SIMPLE: 'Info patched',
@@ -83,6 +100,7 @@ const STATUS = {
   INFO: {
     OK: 200,
     CREATED: 201,
+    DELETE: 204,
   },
 };
 

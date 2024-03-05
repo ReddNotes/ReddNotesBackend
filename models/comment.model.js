@@ -9,6 +9,10 @@ const commentSchema = new mongoose.Schema(
       type: Date,
       default: () => new Date(),
     },
+    updateDate: {
+      type: Date,
+      default: null,
+    },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'user',

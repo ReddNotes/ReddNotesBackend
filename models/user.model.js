@@ -26,10 +26,16 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: () => new Date(),
     },
-    posts: [
+    notes: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'post',
+        ref: 'note',
+      },
+    ],
+    favorites: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'note',
       },
     ],
     avatar: {

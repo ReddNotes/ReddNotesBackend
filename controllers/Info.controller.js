@@ -1,7 +1,7 @@
 // Info.controller.js
 
 // ? models
-const postSchema = require('./../models/post.model');
+const noteSchema = require('../models/note.model');
 const userSchema = require('./../models/user.model');
 
 // ? utils
@@ -14,7 +14,7 @@ class Info {
 
     // ? binding
     this.countAllUsers = this.countAllUsers.bind(this);
-    this.countAllPosts = this.countAllPosts.bind(this);
+    this.countAllNotes = this.countAllNotes.bind(this);
   }
 
   // get count of all users
@@ -26,28 +26,28 @@ class Info {
         type: this.type,
         action: 'count all users',
         statusCode: STATUS.INFO.OK,
-        statusMessage: MESSAGE.INFO.GET.SIMPLE,
+        statusMessage: MESSAGE.INFO.GET.USERS,
         data: result,
       };
     } catch (err) {
-      this.sendError(new Error(err));
+      this.sendError(err);
     }
   }
 
-  // get count of all posts
-  async countAllPosts() {
+  // get count of all notes
+  async countAllNotes() {
     try {
-      const result = await postSchema.countDocuments();
+      const result = await noteSchema.countDocuments();
 
       return {
         type: this.type,
-        action: 'count all posts',
+        action: 'count all notes',
         statusCode: STATUS.INFO.OK,
-        statusMessage: MESSAGE.INFO.GET.SIMPLE,
+        statusMessage: MESSAGE.INFO.GET.NOTES,
         data: result,
       };
     } catch (err) {
-      this.sendError(new Error(err));
+      this.sendError(err);
     }
   }
 }

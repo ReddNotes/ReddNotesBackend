@@ -53,11 +53,11 @@ class Auth {
   }
 
   // login by token
-  loginByToken(data, req) {
+  async loginByToken(data, req) {
     if (!auth.checkToken(data.token, req, this.sendError)) return;
 
     try {
-      const user = userSchema.findByIdAndUpdate(
+      const user = await userSchema.findByIdAndUpdate(
         req.user._id,
         {
           isActive: true,
@@ -83,7 +83,7 @@ class Auth {
   }
 
   // create a new user
-  async signup(data, req, ws) {
+  async signup(data, req) {
     try {
       const hash = await bcrypt.hash(data.data.password, 10);
 

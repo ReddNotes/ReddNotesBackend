@@ -30,7 +30,7 @@ class Auth {
   async login(data, req) {
     try {
       const user = await userSchema.findUserByCredentials(
-        data.data.username,
+        data.data.nickname,
         data.data.password,
       );
 

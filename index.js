@@ -114,27 +114,41 @@ async function mainHandler(ws, req, next) {
         switch (data.action) {
           // ? login by data
           case 'login': {
-            const result = await authController.login(data, req, ws);
+            switch (data.method) {
+              // ? by token
+              case 'by token': {
+                const result = await authController.loginByToken(data, req, ws);
 
-            if (!result) return;
+                if (!result) return;
 
-            updateConnectionsInfo(ws, result.data);
+                updateConnectionsInfo(ws, result.data);
 
-            ws.send(JSON.stringify(result));
+                ws.send(JSON.stringify(result));
 
-            break;
-          }
+                break;
+              }
 
-          // ? login by token
-          case 'loginByToken': {
-            const result = await authController.loginByToken(data, req, ws);
+              // ? by data
+              case 'by data': {
+                const result = await authController.login(data, req, ws);
 
-            if (!result) return;
+                if (!result) return;
 
-            updateConnectionsInfo(ws, result.data);
+                updateConnectionsInfo(ws, result.data);
 
-            ws.send(JSON.stringify(result));
+                ws.send(JSON.stringify(result));
+                break;
+              }
 
+              default: {
+                _sendError(
+                  new NotFoundError(
+                    `Not found this method [${data.method}] in action [${data.action}] in type [${data.type}]`,
+                  ),
+                );
+                break;
+              }
+            }
             break;
           }
 

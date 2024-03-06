@@ -28,7 +28,12 @@ class Note {
 
       if (!_description || !_title) {
         return this.sendError(
-          new BadRequestError(MESSAGE.ERROR.VALIDATION.SIMPLE),
+          new BadRequestError({
+            type: this.type,
+            action: 'create',
+            method: '',
+            errMessage: MESSAGE.ERROR.VALIDATION.SIMPLE,
+          }),
         );
       }
 
@@ -68,7 +73,12 @@ class Note {
       const notes = await noteSchema.find({}).populate('comments');
 
       if (!notes) {
-        throw new NotFoundError(MESSAGE.ERROR.NOT_FOUND.NOTES);
+        throw new NotFoundError({
+          type: this.type,
+          action: 'get',
+          method: 'all',
+          errMessage: MESSAGE.ERROR.NOT_FOUND.NOTES,
+        });
       }
 
       return {

@@ -31,7 +31,14 @@ class Comments {
     try {
       // check id
       if (!isValidHex24(data.data.noteId)) {
-        return this.sendError(new BadRequestError(MESSAGE.ERROR.VALIDATION.ID));
+        return this.sendError(
+          new BadRequestError({
+            type: this.type,
+            action: 'create',
+            method: '',
+            errMessage: MESSAGE.ERROR.VALIDATION.ID,
+          }),
+        );
       }
 
       const _value = data.data.value?.trim();
@@ -39,7 +46,12 @@ class Comments {
       // check id
       if (!_value) {
         return this.sendError(
-          new BadRequestError(MESSAGE.ERROR.BAD_REQUEST.SIMPLE),
+          new BadRequestError({
+            type: this.type,
+            action: 'create',
+            method: '',
+            errMessage: MESSAGE.ERROR.BAD_REQUEST.SIMPLE,
+          }),
         );
       }
 
@@ -50,7 +62,14 @@ class Comments {
 
       // check id
       if (!comment) {
-        return this.sendError(new NotFoundError(MESSAGE.ERROR.NOT_FOUND.NOTE));
+        return this.sendError(
+          new NotFoundError({
+            type: this.type,
+            action: 'create',
+            method: '',
+            errMessage: MESSAGE.ERROR.NOT_FOUND.NOTE,
+          }),
+        );
       }
 
       await noteSchema.findByIdAndUpdate(data.data.noteId, {
@@ -78,7 +97,14 @@ class Comments {
       if (
         !isValidHex24(data.data.commentId) // comment id
       ) {
-        return this.sendError(new BadRequestError(MESSAGE.ERROR.VALIDATION.ID));
+        return this.sendError(
+          new BadRequestError({
+            type: this.type,
+            action: 'update',
+            method: '',
+            errMessage: MESSAGE.ERROR.VALIDATION.ID,
+          }),
+        );
       }
 
       const comment = await commentSchema.findOneAndUpdate(
@@ -88,7 +114,12 @@ class Comments {
       );
 
       if (!comment) {
-        throw new ForbiddenError(MESSAGE.ERROR.FORBIDDEN.COMMENT);
+        throw new ForbiddenError({
+          type: this.type,
+          action: 'update',
+          method: '',
+          errMessage: MESSAGE.ERROR.FORBIDDEN.COMMENT,
+        });
       }
 
       return {
@@ -110,7 +141,14 @@ class Comments {
       if (
         !isValidHex24(data.data.commentId) // comment id
       ) {
-        return this.sendError(new BadRequestError(MESSAGE.ERROR.VALIDATION.ID));
+        return this.sendError(
+          new BadRequestError({
+            type: this.type,
+            action: 'delete',
+            method: '',
+            errMessage: MESSAGE.ERROR.VALIDATION.ID,
+          }),
+        );
       }
 
       const comment = await commentSchema.findOneAndDelete(

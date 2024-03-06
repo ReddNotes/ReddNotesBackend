@@ -27,7 +27,12 @@ class User {
       const users = await userSchema.find({});
 
       if (!users) {
-        throw new NotFoundError(MESSAGE.ERROR.NOT_FOUND.USERS);
+        throw new NotFoundError({
+          type: this.type,
+          action: 'get',
+          method: 'all',
+          errMessage: MESSAGE.ERROR.NOT_FOUND.USERS,
+        });
       }
 
       return {
@@ -49,7 +54,12 @@ class User {
       const user = await userSchema.findById(data.data.userId);
 
       if (!user) {
-        throw new NotFoundError(MESSAGE.ERROR.NOT_FOUND.USER);
+        throw new NotFoundError({
+          type: this.type,
+          action: 'get',
+          method: 'one by id',
+          errMessage: MESSAGE.ERROR.NOT_FOUND.USER,
+        });
       }
 
       const userInfo = { ...user }._doc;
@@ -58,7 +68,7 @@ class User {
 
       return {
         type: this.type,
-        action: 'get user info',
+        action: 'get',
         method: 'one by id',
         statusCode: STATUS.INFO.OK,
         statusMessage: MESSAGE.INFO.GET.USER,
@@ -75,7 +85,12 @@ class User {
       const user = await userSchema.findById(req.user._id);
 
       if (!user) {
-        throw new NotFoundError(MESSAGE.ERROR.NOT_FOUND.USER);
+        throw new NotFoundError({
+          type: this.type,
+          action: 'get',
+          method: 'one by token',
+          errMessage: MESSAGE.ERROR.NOT_FOUND.USER,
+        });
       }
 
       return {
@@ -107,7 +122,12 @@ class User {
       );
 
       if (!user) {
-        throw new NotFoundError(MESSAGE.ERROR.NOT_FOUND.USER);
+        throw new NotFoundError({
+          type: this.type,
+          action: 'update',
+          method: '',
+          errMessage: MESSAGE.ERROR.NOT_FOUND.USER,
+        });
       }
 
       return {

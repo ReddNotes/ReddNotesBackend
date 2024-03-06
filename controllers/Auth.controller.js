@@ -4,7 +4,7 @@
 const bcrypt = require('bcrypt');
 
 // ? error
-const { ConflictError } = require('./../errors/AllErrors');
+const { ConflictError, NotFoundError } = require('./../errors/AllErrors');
 
 // ? middlewares
 const auth = require('./../middlewares/auth.middlewares');
@@ -35,7 +35,12 @@ class Auth {
       );
 
       if (!user) {
-        throw new NotFoundError(MESSAGE.ERROR.NOT_FOUND.USER);
+        throw new NotFoundError({
+          type: 'auth',
+          action: 'login',
+          method: 'by data',
+          errMessage: MESSAGE.ERROR.NOT_FOUND.USER,
+        });
       }
 
       return {
@@ -66,7 +71,12 @@ class Auth {
       );
 
       if (!user) {
-        throw new NotFoundError(MESSAGE.ERROR.NOT_FOUND.USER);
+        throw new NotFoundError({
+          type: 'auth',
+          action: 'login',
+          method: 'by token',
+          errMessage: MESSAGE.ERROR.NOT_FOUND.USER,
+        });
       }
 
       return {
@@ -109,7 +119,14 @@ class Auth {
       };
     } catch (err) {
       if (err.code === 11000) {
-        return this.sendError(new ConflictError(MESSAGE.ERROR.DUPLICATE.USER));
+        return this.sendError(
+          new ConflictError({
+            type: 'auth',
+            action: 'signup',
+            method: '',
+            errMessage: MESSAGE.ERROR.DUPLICATE.USER,
+          }),
+        );
       }
     }
   }

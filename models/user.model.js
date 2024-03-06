@@ -73,14 +73,32 @@ userSchema.set('toJSON', {
 function findUserByCredentials(nickname, password) {
   return this.findOne({ nickname })
     .select('+password')
-    .orFail(() => new NotFoundError(MESSAGE.ERROR.NOT_FOUND.USER))
+    .orFail(
+      () =>
+        new NotFoundError({
+          type: 'auth',
+          action: 'login',
+          method: 'by data',
+          errMessage: MESSAGE.ERROR.NOT_FOUND.USER,
+        }),
+    )
     .then((user) => {
       if (!user) {
-        throw new NotAuthorized(MESSAGE.ERROR.NOT_AUTHORIZED.SIMPLE);
+        throw new NotAuthorized({
+          type: 'auth',
+          action: 'login',
+          method: 'by data',
+          errMessage: MESSAGE.ERROR.NOT_AUTHORIZED.SIMPLE,
+        });
       }
       return bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
-          throw new BadRequestError(MESSAGE.ERROR.PASS.SIMPLE);
+          throw new BadRequestError({
+            type: 'auth',
+            action: 'login',
+            method: 'by data',
+            errMessage: MESSAGE.ERROR.INCORRECT_DATA.PASSWORD,
+          });
         }
         return user;
       });

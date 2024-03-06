@@ -80,6 +80,9 @@ async function mainHandler(ws, req, next) {
     // Отправляем ошибку обратно клиенту через WebSocket
     ws.send(
       JSON.stringify({
+        type: err.type,
+        action: err.action,
+        method: err.method,
         statusCode: err.statusCode,
         errorMessage: err.errorMessage,
       }),

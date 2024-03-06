@@ -21,6 +21,7 @@ const MESSAGE = {
     },
     INCORRECT_DATA: {
       SIMPLE: 'Incorrect data entered',
+      PASSWORD: 'Password is incorrect',
     },
     FORBIDDEN: {
       SIMPLE: 'You are not allowed to do this operation',

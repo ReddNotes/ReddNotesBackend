@@ -41,7 +41,7 @@ class Auth {
       return {
         type: this.type,
         action: 'login',
-        method: 'by nickname and pass',
+        method: 'by data',
         statusCode: STATUS.INFO.OK,
         statusMessage: MESSAGE.INFO.LOGIN.SIMPLE,
         token: auth.createJwtToken(user),

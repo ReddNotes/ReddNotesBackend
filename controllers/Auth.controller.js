@@ -4,7 +4,11 @@
 const bcrypt = require('bcrypt');
 
 // ? error
-const { ConflictError, NotFoundError } = require('./../errors/AllErrors');
+const {
+  ConflictError,
+  NotFoundError,
+  BadRequestError,
+} = require('./../errors/AllErrors');
 
 // ? middlewares
 const auth = require('./../middlewares/auth.middlewares');
@@ -29,14 +33,24 @@ class Auth {
   // login by data
   async login(data, req) {
     try {
-      const user = await userSchema.findUserByCredentials(
-        data.data.nickname,
-        data.data.password,
-      );
+      const _nickname = data.data.nickname?.trim();
+      const _password = data.data.password?.trim();
+
+      // check value
+      if (!_nickname || !_password) {
+        throw new BadRequestError({
+          type: this.type,
+          action: 'login',
+          method: 'by data',
+          errMessage: MESSAGE.ERROR.VALIDATION.VALUE_MISSING,
+        });
+      }
+
+      const user = await userSchema.findUserByCredentials(_nickname, _password);
 
       if (!user) {
         throw new NotFoundError({
-          type: 'auth',
+          type: this.type,
           action: 'login',
           method: 'by data',
           errMessage: MESSAGE.ERROR.NOT_FOUND.USER,
@@ -95,7 +109,20 @@ class Auth {
   // create a new user
   async signup(data, req) {
     try {
-      const hash = await bcrypt.hash(data.data.password, 10);
+      const _nickname = data.data.nickname?.trim();
+      const _password = data.data.password?.trim();
+
+      // check value
+      if (!_nickname || !_password) {
+        throw new BadRequestError({
+          type: this.type,
+          action: 'signup',
+          method: '',
+          errMessage: MESSAGE.ERROR.VALIDATION.VALUE_MISSING,
+        });
+      }
+
+      const hash = await bcrypt.hash(_password, 10);
 
       const user = await userSchema.create({
         nickname: data.data.nickname,
@@ -121,12 +148,14 @@ class Auth {
       if (err.code === 11000) {
         return this.sendError(
           new ConflictError({
-            type: 'auth',
+            type: this.type,
             action: 'signup',
             method: '',
             errMessage: MESSAGE.ERROR.DUPLICATE.USER,
           }),
         );
+      } else {
+        return this.sendError(err);
       }
     }
   }

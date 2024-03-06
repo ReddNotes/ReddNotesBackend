@@ -48,6 +48,7 @@ const MESSAGE = {
     VALIDATION: {
       SIMPLE: 'Validation error',
       ID: 'Invalid id',
+      VALUE_MISSING: 'Value are require',
     },
   },
   INFO: {

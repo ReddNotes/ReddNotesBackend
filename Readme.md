@@ -127,7 +127,3 @@ This provides an overview of the WebSocket routes implemented in the backend cod
 ![logo_ReddNotes](./public/image/backendArch.PNG)
 
 ![logo_ReddNotes](./public/image/Models.PNG)
-
-## Color Pallet
-
-![logo_ReddNotes](./public/image/colorPallete.PNG)

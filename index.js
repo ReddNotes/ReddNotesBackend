@@ -120,26 +120,26 @@ async function mainHandler(ws, req, next) {
             switch (data.method) {
               // ? by token
               case 'by token': {
-                const result = await authController.loginByToken(data, req, ws);
+                const res = await authController.loginByToken(data, req);
 
-                if (!result) return;
+                if (!res) return;
 
-                updateConnectionsInfo(ws, result.data);
+                updateConnectionsInfo(ws, res.data);
 
-                ws.send(JSON.stringify(result));
+                ws.send(JSON.stringify(res));
 
                 break;
               }
 
               // ? by data
               case 'by data': {
-                const result = await authController.login(data, req, ws);
+                const res = await authController.login(data, req);
 
-                if (!result) return;
+                if (!res) return;
 
-                updateConnectionsInfo(ws, result.data);
+                updateConnectionsInfo(ws, res.data);
 
-                ws.send(JSON.stringify(result));
+                ws.send(JSON.stringify(res));
                 break;
               }
 
@@ -157,7 +157,7 @@ async function mainHandler(ws, req, next) {
 
           // ? register a new one user
           case 'signup': {
-            const res = await authController.signup(data, req, ws);
+            const res = await authController.signup(data, req);
 
             if (!res) return;
 
@@ -229,10 +229,6 @@ async function mainHandler(ws, req, next) {
             switch (data.method) {
               // ? all
               case 'all': {
-                // check token
-                const error = auth.isUserAuthorized(req, data.token);
-                if (error) return _sendError(error);
-
                 const res = await userController.getAllUserInfo(data, req);
 
                 if (!res) return;
@@ -260,10 +256,6 @@ async function mainHandler(ws, req, next) {
 
               // ? by id
               case 'one by id': {
-                // check token
-                const error = auth.isUserAuthorized(req, data.token);
-                if (error) return _sendError(error);
-
                 const res = await userController.getOneUserInfoById(data, req);
 
                 if (!res) return;

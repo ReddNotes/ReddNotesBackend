@@ -31,6 +31,10 @@ const MESSAGE = {
         SET: 'You are already set reaction',
         DELETE: 'You do not set reaction yet',
       },
+      FAVORITE: {
+        ADD: 'You are already added note',
+        DELETE: 'You do not add this note yet',
+      },
     },
     NOT_FOUND: {
       SIMPLE: 'Not found',
@@ -81,6 +85,7 @@ const MESSAGE = {
     PUT: {
       SIMPLE: 'Was successful put',
       REACTION: 'Reaction was successful set',
+      FAVORITE: 'Was successful added to favorites',
     },
     UPDATE: {
       SIMPLE: 'Info patched',

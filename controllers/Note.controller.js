@@ -162,6 +162,113 @@ class Note {
 
   // todo create a function to delete note
 
+  // add note to favorites
+  async addToFavoriteNotesById(data, req) {
+    try {
+      // check id
+      if (!isValidHex24(data.data.noteId)) {
+        throw new BadRequestError({
+          type: this.type,
+          action: 'favorite',
+          method: 'add',
+          errMessage: MESSAGE.ERROR.VALIDATION.ID,
+        });
+      }
+
+      // try to find note by id
+      const note = await noteSchema.findById(data.data.noteId);
+
+      if (!note) {
+        throw new NotFoundError({
+          type: this.type,
+          action: 'favorite',
+          method: 'add',
+          errMessage: MESSAGE.ERROR.NOT_FOUND.NOTE,
+        });
+      }
+
+      const user = await userSchema.findById(req.user._id);
+
+      if (user.favorites.includes(data.data.noteId)) {
+        throw new ForbiddenError({
+          type: this.type,
+          action: 'favorite',
+          method: 'add',
+          errMessage: MESSAGE.ERROR.FORBIDDEN.REACTION.SET,
+        });
+      }
+
+      user.favorites.push(data.data.noteId);
+
+      user.save();
+
+      if (!user) {
+        throw new ForbiddenError({
+          type: this.type,
+          action: 'favorite',
+          method: 'add',
+          errMessage: MESSAGE.ERROR.FORBIDDEN.FAVORITE.ADD,
+        });
+      }
+
+      return {
+        type: this.type,
+        action: 'favorite',
+        method: 'add',
+        statusCode: STATUS.INFO.OK,
+        statusMessage: MESSAGE.INFO.PUT.FAVORITE,
+        data: user,
+      };
+    } catch (err) {
+      this.sendError(err);
+    }
+  }
+
+  // delete note from favorites
+  async deleteFromFavoriteNotesById(data, req) {
+    try {
+      // check id
+      if (!isValidHex24(data.data.noteId)) {
+        throw new BadRequestError({
+          type: this.type,
+          action: 'favorite',
+          method: 'delete',
+          errMessage: MESSAGE.ERROR.VALIDATION.ID,
+        });
+      }
+
+      const user = await userSchema.findOneAndUpdate(
+        { _id: req.user._id, favorites: { $in: [data.data.noteId] } },
+        {
+          $pull: {
+            favorites: data.data.noteId,
+          },
+        },
+        { new: true },
+      );
+
+      if (!user) {
+        throw new ForbiddenError({
+          type: this.type,
+          action: 'reaction',
+          method: 'delete',
+          errMessage: MESSAGE.ERROR.FORBIDDEN.FAVORITE.DELETE,
+        });
+      }
+
+      return {
+        type: this.type,
+        action: 'favorite',
+        method: 'delete',
+        statusCode: STATUS.INFO.DELETE,
+        statusMessage: MESSAGE.INFO.DELETE.REACTION,
+        data: user,
+      };
+    } catch (err) {
+      this.sendError(err);
+    }
+  }
+
   // get all notes
   async getAllNotes(data, req) {
     try {

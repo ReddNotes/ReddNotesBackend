@@ -437,7 +437,74 @@ async function mainHandler(ws, req, next) {
                 break;
               }
             }
+
             break;
+          }
+
+          // ? favorite note by Id add/delete
+          case 'favorite': {
+            switch (data.method) {
+              // add to favorites
+              case 'add': {
+                // check token
+                const error = auth.isUserAuthorized(req, data.token);
+                if (error)
+                  return _sendError({
+                    type: data.type,
+                    action: data.action,
+                    method: data.method,
+                    ...error,
+                  });
+
+                const res = await noteController.addToFavoriteNotesById(
+                  data,
+                  req,
+                );
+
+                if (!res) return;
+
+                ws.send(JSON.stringify(res));
+
+                break;
+              }
+
+              // delete from favorites
+              case 'delete': {
+                // check token
+                const error = auth.isUserAuthorized(req, data.token);
+                if (error)
+                  return _sendError({
+                    type: data.type,
+                    action: data.action,
+                    method: data.method,
+                    ...error,
+                  });
+
+                const res = await noteController.deleteFromFavoriteNotesById(
+                  data,
+                  req,
+                );
+
+                if (!res) return;
+
+                ws.send(JSON.stringify(res));
+
+                break;
+              }
+
+              default: {
+                _sendError(
+                  new NotFoundError({
+                    type: data.type,
+                    action: data.action,
+                    method: data.method,
+                    errMessage: `Not found this method [${data.method}] in action [${data.action}] in type [${data.type}]`,
+                  }),
+                );
+                break;
+              }
+            }
+
             break;
           }
 

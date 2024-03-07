@@ -73,8 +73,6 @@ class Auth {
 
   // login by token
   async loginByToken(data, req) {
-    if (!auth.checkToken(data.token, req, this.sendError)) return;
-
     try {
       const user = await userSchema.findByIdAndUpdate(
         req.user._id,

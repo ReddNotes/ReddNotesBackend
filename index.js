@@ -108,7 +108,14 @@ async function mainHandler(ws, req, next) {
     try {
       data = await JSON.parse(msg);
     } catch (err) {
-      return _sendError(new BadRequestError('Messages must be valid JSON'));
+      return _sendError(
+        new BadRequestError({
+          // type: data.type,
+          // action: data.action,
+          // method: data.method,
+          errMessage: 'Messages must be valid JSON',
+        }),
+      );
     }
 
     switch (data.type) {
@@ -120,6 +127,16 @@ async function mainHandler(ws, req, next) {
             switch (data.method) {
               // ? by token
               case 'by token': {
+                // check token
+                const error = auth.isUserAuthorized(req, data.token);
+                if (error)
+                  return _sendError({
+                    type: data.type,
+                    action: data.action,
+                    method: data.method,
+                    ...error,
+                  });
+
                 const res = await authController.loginByToken(data, req);
 
                 if (!res) return;
@@ -145,9 +162,12 @@ async function mainHandler(ws, req, next) {
 
               default: {
                 _sendError(
-                  new NotFoundError(
-                    `Not found this method [${data.method}] in action [${data.action}] in type [${data.type}]`,
-                  ),
+                  new NotFoundError({
+                    type: data.type,
+                    action: data.action,
+                    method: data.method,
+                    errMessage: `Not found this method [${data.method}] in action [${data.action}] in type [${data.type}]`,
+                  }),
                 );
                 break;
               }
@@ -170,9 +190,12 @@ async function mainHandler(ws, req, next) {
 
           default:
             _sendError(
-              new NotFoundError(
-                `Not found this action [${data.action}] in action [${data.type}]`,
-              ),
+              new NotFoundError({
+                type: data.type,
+                action: data.action,
+                method: data.method,
+                errMessage: `Not found this in action [${data.action}] in type [${data.type}]`,
+              }),
             );
             break;
         }
@@ -196,9 +219,12 @@ async function mainHandler(ws, req, next) {
 
           default: {
             _sendError(
-              new NotFoundError(
-                `Not found this action [${data.action}] in action [${data.type}]`,
-              ),
+              new NotFoundError({
+                type: data.type,
+                action: data.action,
+                method: data.method,
+                errMessage: `Not found this in action [${data.action}] in type [${data.type}]`,
+              }),
             );
             break;
           }
@@ -213,7 +239,13 @@ async function mainHandler(ws, req, next) {
           case 'update': {
             // check token
             const error = auth.isUserAuthorized(req, data.token);
-            if (error) return _sendError(error);
+            if (error)
+              return _sendError({
+                type: data.type,
+                action: data.action,
+                method: data.method,
+                ...error,
+              });
 
             const res = await userController.updateUserInfoByToken(data, req);
 
@@ -266,9 +298,12 @@ async function mainHandler(ws, req, next) {
 
               default: {
                 _sendError(
-                  new NotFoundError(
-                    `Not found this method [${data.method}] in action [${data.action}] in type [${data.type}]`,
-                  ),
+                  new NotFoundError({
+                    type: data.type,
+                    action: data.action,
+                    method: data.method,
+                    errMessage: `Not found this method [${data.method}] in action [${data.action}] in type [${data.type}]`,
+                  }),
                 );
                 break;
               }
@@ -278,9 +313,12 @@ async function mainHandler(ws, req, next) {
 
           default: {
             _sendError(
-              new NotFoundError(
-                `Not found this action [${data.action}] in type [${data.type}]`,
-              ),
+              new NotFoundError({
+                type: data.type,
+                action: data.action,
+                method: data.method,
+                errMessage: `Not found this action [${data.action}] in type [${data.type}]`,
+              }),
             );
             break;
           }
@@ -308,9 +346,12 @@ async function mainHandler(ws, req, next) {
 
               default: {
                 _sendError(
-                  new NotFoundError(
-                    `Not found this method [${data.method}] in action [${data.action}] in type [${data.type}]`,
-                  ),
+                  new NotFoundError({
+                    type: data.type,
+                    action: data.action,
+                    method: data.method,
+                    errMessage: `Not found this method [${data.method}] in action [${data.action}] in type [${data.type}]`,
+                  }),
                 );
                 break;
               }
@@ -318,7 +359,7 @@ async function mainHandler(ws, req, next) {
             break;
           }
 
-          // ? create a new one chat with user/users by Id
+          // ? create a new one note by Id
           case 'create': {
             // check token
             const error = auth.isUserAuthorized(req, data.token);
@@ -333,11 +374,81 @@ async function mainHandler(ws, req, next) {
             break;
           }
 
+          // ? reaction to note by Id set/delete
+          case 'reaction': {
+            switch (data.method) {
+              // set reaction
+              case 'set': {
+                // check token
+                const error = auth.isUserAuthorized(req, data.token);
+                if (error)
+                  return _sendError({
+                    type: data.type,
+                    action: data.action,
+                    method: data.method,
+                    ...error,
+                  });
+
+                const res = await noteController.setReactionToNoteById(
+                  data,
+                  req,
+                );
+
+                if (!res) return;
+
+                _sendInfoToOnlineUser(res);
+
+                break;
+              }
+
+              // delete reaction
+              case 'delete': {
+                // check token
+                const error = auth.isUserAuthorized(req, data.token);
+                if (error)
+                  return _sendError({
+                    type: data.type,
+                    action: data.action,
+                    method: data.method,
+                    ...error,
+                  });
+
+                const res = await noteController.deleteReactionToNoteById(
+                  data,
+                  req,
+                );
+
+                if (!res) return;
+
+                _sendInfoToOnlineUser(res);
+
+                break;
+              }
+
+              default: {
+                _sendError(
+                  new NotFoundError({
+                    type: data.type,
+                    action: data.action,
+                    method: data.method,
+                    errMessage: `Not found this method [${data.method}] in action [${data.action}] in type [${data.type}]`,
+                  }),
+                );
+                break;
+              }
+            }
+            break;
+            break;
+          }
+
           default: {
             _sendError(
-              new NotFoundError(
-                `Not found this action [${data.action}] in action [${data.type}]`,
-              ),
+              new NotFoundError({
+                type: data.type,
+                action: data.action,
+                method: data.method,
+                errMessage: `Not found this action [${data.action}] in action [${data.type}]`,
+              }),
             );
             break;
           }
@@ -402,9 +513,12 @@ async function mainHandler(ws, req, next) {
 
           default: {
             _sendError(
-              new NotFoundError(
-                `Not found this action [${data.action}] in action [${data.type}]`,
-              ),
+              new NotFoundError({
+                type: data.type,
+                action: data.action,
+                method: data.method,
+                errMessage: `Not found this action [${data.action}] in type [${data.type}]`,
+              }),
             );
             break;
           }
@@ -413,7 +527,14 @@ async function mainHandler(ws, req, next) {
       }
 
       default: {
-        _sendError(new NotFoundError('Not found this type'));
+        _sendError(
+          new NotFoundError({
+            type: data.type,
+            action: data.action,
+            method: data.method,
+            errMessage: `Not found this type [${data.type}]`,
+          }),
+        );
         break;
       }
     }

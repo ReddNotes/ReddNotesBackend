@@ -8,6 +8,7 @@ const {
 } = require('../errors/AllErrors');
 
 // ? models
+const commentSchema = require('../models/comment.model');
 const userSchema = require('../models/user.model');
 const noteSchema = require('../models/note.model');
 
@@ -160,7 +161,44 @@ class Note {
 
   // todo create a function to update note
 
-  // todo create a function to delete note
+  // delete note
+  async deleteOneById(data, req) {
+    try {
+      // check id
+      if (!isValidHex24(data.data.noteId)) {
+        throw new BadRequestError({
+          type: this.type,
+          action: 'delete',
+          errMessage: MESSAGE.ERROR.VALIDATION.ID,
+        });
+      }
+
+      // try to delete userID from notes likes
+      const note = await noteSchema.findOneAndDelete(data.data.noteId);
+
+      if (!note) {
+        throw new ForbiddenError({
+          type: this.type,
+          action: 'delete',
+          errMessage: MESSAGE.ERROR.NOT_FOUND.NOTE,
+        });
+      }
+
+      for (const commentId of note.comments) {
+        await commentSchema.findByIdAndDelete(commentId);
+      }
+
+      return {
+        type: this.type,
+        action: 'delete',
+        statusCode: STATUS.INFO.DELETE,
+        statusMessage: MESSAGE.INFO.DELETE.NOTE,
+        data: note,
+      };
+    } catch (err) {
+      this.sendError(err);
+    }
+  }
 
   // add note to favorites
   async addToFavoriteNotesById(data, req) {

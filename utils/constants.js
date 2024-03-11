@@ -26,6 +26,7 @@ const MESSAGE = {
     FORBIDDEN: {
       SIMPLE: 'You are not allowed to do this operation',
       COMMENT: 'You are not allowed to do operations with this comment',
+      NOTE: 'You are not allowed to do operations with this note',
       REACTION: {
         SIMPLE: 'You are not allowed to work with this reaction',
         SET: 'You are already set reaction',
@@ -81,6 +82,7 @@ const MESSAGE = {
       SIMPLE: 'Deleted',
       COMMENT: 'Comment was successful deleted',
       REACTION: 'Reaction was successful delete',
+      NOTE: 'Note was successful delete',
     },
     PUT: {
       SIMPLE: 'Was successful put',

@@ -508,6 +508,27 @@ async function mainHandler(ws, req, next) {
             break;
           }
 
+          // ? delete note by Id
+          case 'delete': {
+            // check token
+            const error = auth.isUserAuthorized(req, data.token);
+            if (error)
+              return _sendError({
+                type: data.type,
+                action: data.action,
+                method: data.method,
+                ...error,
+              });
+
+            const res = await noteController.deleteOneById(data, req);
+
+            if (!res) return;
+
+            _sendInfoToOnlineUser(res);
+
+            break;
+          }
+
           default: {
             _sendError(
               new NotFoundError({

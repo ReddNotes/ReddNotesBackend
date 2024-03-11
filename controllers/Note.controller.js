@@ -174,7 +174,7 @@ class Note {
       }
 
       // try to delete userID from notes likes
-      const note = await noteSchema.findOneAndDelete(data.data.noteId);
+      const note = await noteSchema.findByIdAndDelete(data.data.noteId);
 
       if (!note) {
         throw new ForbiddenError({
@@ -187,6 +187,10 @@ class Note {
       for (const commentId of note.comments) {
         await commentSchema.findByIdAndDelete(commentId);
       }
+
+      await userSchema.findByIdAndUpdate(note.owner, {
+        $pull: { notes: note._id },
+      });
 
       return {
         type: this.type,

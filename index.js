@@ -649,6 +649,6 @@ server.use(express.json());
 server.listen(SERVER_SETTING.PORT, async () => {
   console.clear();
   await mongoose.connect(SERVER_SETTING.DB.ADDRESS);
-  console.log('Connecting to MongoDB');
+  console.log(`Connecting to MongoDB [${SERVER_SETTING.DB.ADDRESS}]`);
   console.log(`Server is running at port [${SERVER_SETTING.PORT}]`);
 });

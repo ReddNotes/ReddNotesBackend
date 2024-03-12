@@ -8,7 +8,7 @@ const CONFIG = require('./../config.json');
 const SERVER_SETTING = {
   PORT: process.env.PORT || CONFIG.PORT,
   DB: {
-    ADDRESS: process.env.DB_NAME || CONFIG.DB.NAME,
+    NAME: process.env.DB_NAME || CONFIG.DB.NAME,
     ADDRESS: process.env.DB_ADDRESS || CONFIG.DB.ADDRESS,
   },
   SECRET_KEY: process.env.SECRET_KEY || CONFIG.SECRET_KEY,

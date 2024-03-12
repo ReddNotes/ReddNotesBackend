@@ -172,7 +172,7 @@ class Comments {
         action: 'delete',
         statusCode: STATUS.INFO.DELETE,
         statusMessage: MESSAGE.INFO.DELETE.COMMENT,
-        data: comment,
+        data: { ...comment._doc, noteId: data.data.noteId },
       };
     } catch (err) {
       this.sendError(err);

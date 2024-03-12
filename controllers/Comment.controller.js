@@ -78,12 +78,17 @@ class Comments {
         },
       });
 
+      const _data = {
+        noteId: data.data.noteId,
+        ...comment._doc,
+      };
+
       return {
         type: this.type,
         action: 'create',
         statusCode: STATUS.INFO.CREATED,
         statusMessage: MESSAGE.INFO.CREATED.COMMENT,
-        data: comment,
+        data: _data,
       };
     } catch (err) {
       this.sendError(err);

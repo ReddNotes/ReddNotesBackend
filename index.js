@@ -183,7 +183,11 @@ async function mainHandler(ws, req, next) {
 
             updateConnectionsInfo(ws, res.data);
 
-            _sendInfoToOnlineUser(res);
+            ws.send(JSON.stringify(res));
+
+            _sendInfoToOnlineUser(
+              JSON.stringify(await infoController.countAllUsers()),
+            );
 
             break;
           }

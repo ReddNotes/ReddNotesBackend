@@ -185,9 +185,13 @@ async function mainHandler(ws, req, next) {
 
             ws.send(JSON.stringify(res));
 
-            _sendInfoToOnlineUser(
-              JSON.stringify(await infoController.countAllUsers()),
-            );
+            const _data = { ...res };
+
+            delete _data.token;
+
+            _sendInfoToOnlineUser(await infoController.countAllUsers());
+
+            _sendInfoToOnlineUser(_data);
 
             break;
           }

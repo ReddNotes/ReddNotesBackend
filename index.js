@@ -255,11 +255,45 @@ async function mainHandler(ws, req, next) {
                 ...error,
               });
 
-            const res = await userController.updateUserInfoByToken(data, req);
+            // user profile info
+            switch (data.method) {
+              case 'data': {
+                const res = await userController.updateUserInfoByToken(
+                  data,
+                  req,
+                );
 
-            if (!res) return;
+                if (!res) return;
 
-            _sendInfoToOnlineUser(res);
+                _sendInfoToOnlineUser(res);
+                break;
+              }
+
+              // user settings info
+              case 'settings': {
+                const res = await userController.updateUserSettingsByToken(
+                  data,
+                  req,
+                );
+
+                if (!res) return;
+
+                ws.send(JSON.stringify(res));
+                break;
+              }
+
+              default: {
+                _sendError(
+                  new NotFoundError({
+                    type: data.type,
+                    action: data.action,
+                    method: data.method,
+                    errMessage: `Not found this method [${data.method}] in action [${data.action}] in type [${data.type}]`,
+                  }),
+                );
+                break;
+              }
+            }
 
             break;
           }

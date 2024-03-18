@@ -41,7 +41,8 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String,
       default:
-        'https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png',
+        // 'https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png',
+        'https://cdn-icons-png.flaticon.com/512/1144/1144760.png',
     },
     firstName: {
       type: String,
@@ -57,7 +58,17 @@ const userSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      default: 'I am a new user ReddNotes',
+      default: 'I am a new user of ReddNotes',
+    },
+    settings: {
+      theme: {
+        type: String,
+        default: 'light',
+      },
+      notification: {
+        type: Boolean,
+        default: true,
+      },
     },
   },
   { versionKey: false },

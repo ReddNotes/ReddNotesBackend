@@ -125,7 +125,7 @@ class User {
         throw new NotFoundError({
           type: this.type,
           action: 'update',
-          method: '',
+          method: 'data',
           errMessage: MESSAGE.ERROR.NOT_FOUND.USER,
         });
       }
@@ -133,8 +133,45 @@ class User {
       return {
         type: this.type,
         action: 'update',
+        method: 'data',
         statusCode: STATUS.INFO.OK,
-        statusMessage: MESSAGE.INFO.PATCH.USER,
+        statusMessage: MESSAGE.INFO.PATCH.SETTINGS,
+        data: user,
+      };
+    } catch (err) {
+      this.sendError(err);
+    }
+  }
+
+  // update user settings
+  async updateUserSettingsByToken(data, req) {
+    try {
+      const user = await userSchema.findByIdAndUpdate(
+        req.user._id,
+        {
+          settings: {
+            theme: data.data.theme,
+            notification: data.data.notification,
+          },
+        },
+        { new: true },
+      );
+
+      if (!user) {
+        throw new NotFoundError({
+          type: this.type,
+          action: 'update',
+          method: 'settings',
+          errMessage: MESSAGE.ERROR.NOT_FOUND.USER,
+        });
+      }
+
+      return {
+        type: this.type,
+        action: 'update',
+        method: 'settings',
+        statusCode: STATUS.INFO.OK,
+        statusMessage: MESSAGE.INFO.PATCH.SETTINGS,
         data: user,
       };
     } catch (err) {

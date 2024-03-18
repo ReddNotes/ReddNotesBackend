@@ -97,6 +97,7 @@ const MESSAGE = {
     PATCH: {
       SIMPLE: 'Info patched',
       USER: 'Info of user was successful updated',
+      SETTINGS: 'Info of users settings was successful updated',
     },
     LOGOUT: { SIMPLE: 'You have successfully logged out' },
     LOGIN: { SIMPLE: 'You have successfully logged in' },
